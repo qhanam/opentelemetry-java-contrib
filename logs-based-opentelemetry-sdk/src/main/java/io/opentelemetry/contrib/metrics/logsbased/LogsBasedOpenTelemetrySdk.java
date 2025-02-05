@@ -5,9 +5,7 @@ import io.opentelemetry.api.metrics.MeterProvider;
 import io.opentelemetry.api.trace.TracerProvider;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
-import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
-import io.opentelemetry.sdk.trace.SdkTracerProvider;
 
 public class LogsBasedOpenTelemetrySdk implements OpenTelemetry {
 
@@ -15,14 +13,9 @@ public class LogsBasedOpenTelemetrySdk implements OpenTelemetry {
 
     private final MeterProvider meterProvider;
 
-    LogsBasedOpenTelemetrySdk(SdkTracerProvider tracerProvider, SdkMeterProvider meterProvider, SdkLoggerProvider loggerProvider, ContextPropagators propagators) {
-        this.meterProvider = new LogsBasedMeterProvider();
-        this.openTelemetrySdk = OpenTelemetrySdk
-                .builder()
-                .setTracerProvider(tracerProvider)
-                .setLoggerProvider(loggerProvider)
-                .setPropagators(propagators)
-                .build();
+    LogsBasedOpenTelemetrySdk(OpenTelemetrySdk openTelemetrySdk, SdkMeterProvider meterProvider) {
+        this.meterProvider = new LogsBasedMeterProvider(meterProvider);
+        this.openTelemetrySdk = openTelemetrySdk;
     }
 
     public static LogsBasedOpenTelemetrySdkBuilder builder() {
